@@ -1,7 +1,5 @@
 import allure
 
-from seletools.actions import drag_and_drop
-
 from pages.constructor_page import ConstructorPage
 from pages.order_feed_page import OrderFeedPage
 from locators.constructor_page_locators import ConstructorPageLocator
@@ -13,30 +11,32 @@ class TestConstructorPage:
     @allure.title('Переход по клику на кнопку «Конструктор»')
     def test_go_to_constructor_using_nav_button(self, driver):
         orderFeedPage = OrderFeedPage(driver)
+        constructorPage = ConstructorPage(driver)
         orderFeedPage.go_to_page(Endpoints.MAIN_PAGE + Endpoints.ORDER_FEED_PAGE)
 
-        orderFeedPage.click_on_constructor_button()
-        orderFeedPage.wait_for_load(ConstructorPageLocator.INGREDIENTS_CONTAINER)
+        orderFeedPage.click_constructor_button()
+        constructorPage.wait_for_constructor_page_load()
         
-        assert orderFeedPage.get_current_url() == Endpoints.MAIN_PAGE
+        assert constructorPage.get_current_url() == Endpoints.MAIN_PAGE
 
     @allure.title('Переход по клику на кнопку «Лента заказов»')
     def test_go_to_order_feed_using_nav_button(self, driver):
         constructorPage = ConstructorPage(driver)
+        orderFeedPage = OrderFeedPage(driver)
         constructorPage.go_to_page(Endpoints.MAIN_PAGE)
 
-        constructorPage.wait_and_click_on_element(ConstructorPageLocator.ORDER_FEED_BUTTON)
-        constructorPage.wait_for_load(OrderFeedPageLocator.ORDERS_LIST)
+        constructorPage.click_order_feed_button()
+        orderFeedPage.wait_for_order_feed_page_load()
 
-        assert constructorPage.get_current_url() == Endpoints.MAIN_PAGE + Endpoints.ORDER_FEED_PAGE
+        assert orderFeedPage.get_current_url() == Endpoints.MAIN_PAGE + Endpoints.ORDER_FEED_PAGE
 
     @allure.title('Клик на ингредиент, вызывает всплывающее окно с деталями')
     def test_show_ingredient_details_popup(self, driver):
         constructorPage = ConstructorPage(driver)
         constructorPage.go_to_page(Endpoints.MAIN_PAGE)
 
-        constructorPage.wait_and_click_on_element(ConstructorPageLocator.INGREDIENT_ELEMENT)
-        modal_class = constructorPage.wait_and_find_element(ConstructorPageLocator.INGREDIENT_MODAL).get_attribute('class')
+        constructorPage.click_on_ingredient_element()
+        modal_class = constructorPage.get_ingredient_modal_class()
 
         assert '_opened' in modal_class
 
@@ -45,9 +45,9 @@ class TestConstructorPage:
         constructorPage = ConstructorPage(driver)
         constructorPage.go_to_page(Endpoints.MAIN_PAGE)
 
-        constructorPage.wait_and_click_on_element(ConstructorPageLocator.INGREDIENT_ELEMENT)
-        constructorPage.wait_and_click_on_element(ConstructorPageLocator.INGREDIENT_MODAL_CLOSE_BUTTON)
-        modal_class = constructorPage.wait_and_find_element(ConstructorPageLocator.INGREDIENT_MODAL).get_attribute('class')
+        constructorPage.click_on_ingredient_element()
+        constructorPage.click_modal_close_button()
+        modal_class = constructorPage.get_ingredient_modal_class()
 
         assert '_opened' not in modal_class
 
@@ -55,11 +55,9 @@ class TestConstructorPage:
     def test_increasing_amount_of_added_ingredient(self, driver):
         constructorPage = ConstructorPage(driver)
         constructorPage.go_to_page(Endpoints.MAIN_PAGE)
-        source = constructorPage.wait_and_find_element(ConstructorPageLocator.INGREDIENT_ELEMENT)
-        target = constructorPage.wait_and_find_element(ConstructorPageLocator.BURGER_CONSTRUCTOR)
-        initial_amount = constructorPage.wait_and_get_text(ConstructorPageLocator.INGREDIENT_COUNT)
+        initial_amount = constructorPage.get_ingredient_amount()
 
-        drag_and_drop(driver, source, target)
-        result_amount = constructorPage.wait_and_get_text(ConstructorPageLocator.INGREDIENT_COUNT)
+        constructorPage.add_ingredient()       
+        result_amount = constructorPage.get_ingredient_amount()
 
         assert initial_amount < result_amount
