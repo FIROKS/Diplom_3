@@ -12,3 +12,5 @@ class ConstructorPageLocator:
     SUCCESS_MODAL = (
         By.XPATH,
         '//section[contains(@class, "Modal_modal_opened")]/following::div[starts-with(@class, "Modal_modal__")]')
+    MODAL_NEW_ORDER_ID = (By.XPATH, '//section[contains(@class, "Modal_modal_opened")]//h2[contains(@class, "Modal_modal__title")]')
+    LAST_INGREDIENT = (By.XPATH, '//div[contains(@class, "BurgerIngredients_ingredients__menuContainer")]/ul[last()]/a[last()]')

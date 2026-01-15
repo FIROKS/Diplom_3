@@ -1,12 +1,16 @@
 import pytest
 from selenium import webdriver
 
+import logging
+
 from pages.login_page import LoginPage
 from endpoints import Endpoints
 from helpers import delete_user, register_new_user
 
 
-@pytest.fixture(scope='session', params=['Chrome', 'Firefox'])
+logging.basicConfig(level=logging.INFO)
+
+@pytest.fixture(scope='function', params=['Chrome', 'Firefox'])
 def driver(request):
     driver = None
 
@@ -30,9 +34,9 @@ def delete_user_after_test(driver):
 
     try:
         delete_user(user_data['accessToken'], user_data['email'])
-        print(f'Удален пользователь с email: {user_data['email']}')
+        logging.info(f'Удален пользователь с email: {user_data['email']}')
     except Exception as e:
-        print(f'Ошибка удаления пользователя с email: {user_data['email']}: {e}')
+        logging.warning(f'Ошибка удаления пользователя с email: {user_data['email']}: {e}')
 
 @pytest.fixture(scope="function")
 def login(delete_user_after_test):

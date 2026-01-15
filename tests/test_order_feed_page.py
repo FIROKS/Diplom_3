@@ -44,9 +44,9 @@ class TestOrderFeedPage:
 
         constructor_page.add_ingredient()
         constructor_page.click_order_button()
-        constructor_page.click_success_order_close_button()
+        new_order_id = constructor_page.click_success_order_close_button()
         constructor_page.click_order_feed_button_script()
-        order = order_feed_page.get_cooking_order()
+        cooking_order_id = order_feed_page.get_cooking_order()
 
-        assert order != 'Все текущие заказы готовы!'
+        assert new_order_id == cooking_order_id
         

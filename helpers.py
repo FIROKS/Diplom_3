@@ -6,7 +6,7 @@ import requests
 from endpoints import Endpoints
 
 
-@allure.step('{title}')
+@allure.step('Отправляем POST запрос - {title}')
 def send_post_request(url, data, title):
     response = requests.post(url, data)
     return response
@@ -39,7 +39,7 @@ def register_new_user():
         'password': payload['password']
     }
 
-    response = send_post_request(Endpoints.MAIN_PAGE + Endpoints.CREATE_USER, payload, 'Отправляем запрос на создание нового пользователя')
+    response = send_post_request(Endpoints.MAIN_PAGE + Endpoints.CREATE_USER, payload, 'Создание нового пользователя')
 
     if response.status_code == 200:
         credentials = response.json()

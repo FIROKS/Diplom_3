@@ -2,8 +2,6 @@ import allure
 
 from pages.constructor_page import ConstructorPage
 from pages.order_feed_page import OrderFeedPage
-from locators.constructor_page_locators import ConstructorPageLocator
-from locators.order_feed_page_locators import OrderFeedPageLocator
 from endpoints import Endpoints
 
 

@@ -20,6 +20,13 @@ class BasePage:
         WebDriverWait(self.driver, Config.DEFAULT_WAIT).until(expected_conditions.visibility_of_element_located(selector))
         self.driver.find_element(*selector).click()
 
+    @allure.step('Скролл до элемента')
+    def find_and_focus_by_script(self, selector):
+        WebDriverWait(self.driver, Config.DEFAULT_WAIT).until(expected_conditions.presence_of_element_located(selector))
+        element_to_focus = self.driver.find_element(*selector)
+        self.driver.execute_script("arguments[0].scrollIntoView();", element_to_focus)
+        WebDriverWait(self.driver, Config.DEFAULT_WAIT).until(expected_conditions.element_to_be_clickable(selector))
+
     @allure.step('Подождать и найти элемент')
     def wait_and_find_element(self, selector):
         WebDriverWait(self.driver, Config.DEFAULT_WAIT).until(expected_conditions.visibility_of_element_located(selector))

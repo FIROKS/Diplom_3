@@ -4,7 +4,7 @@ from seletools.actions import drag_and_drop
 
 from pages.base_page import BasePage
 from locators.constructor_page_locators import ConstructorPageLocator
-from data import Config
+from data import ORDER_MOCK_ID
 
 
 class ConstructorPage(BasePage):
@@ -14,6 +14,10 @@ class ConstructorPage(BasePage):
 
     @allure.step('Нажимаем на кнопку "Лента заказов"')
     def click_order_feed_button(self):
+        # Использую скролл до последнего ингредиента, потому что в Firefox клик происходит по оверлею
+        # А скролл дает небольшую задержку. Клик скриптом так же не помогает
+        super().find_and_focus_by_script(ConstructorPageLocator.LAST_INGREDIENT)
+        super().find_and_focus_by_script(ConstructorPageLocator.ORDER_FEED_BUTTON)
         super().wait_and_click_on_element(ConstructorPageLocator.ORDER_FEED_BUTTON)
 
     @allure.step('Нажимаем на ингредиент')
@@ -44,11 +48,12 @@ class ConstructorPage(BasePage):
 
     @allure.step('Нажимаем на кнопку закрытия окна с идентификатором заказа')
     def click_success_order_close_button(self):
-        try:
-            super().wait_for_load(ConstructorPageLocator.SUCCESS_MODAL, Config.LONG_WAIT)
-            super().wait_and_click_on_element(ConstructorPageLocator.INGREDIENT_MODAL_CLOSE_BUTTON)
-        except:
-            super().click_to_element_by_script(ConstructorPageLocator.INGREDIENT_MODAL_CLOSE_BUTTON)
+        new_order_id = ORDER_MOCK_ID
+        # Ждем появления номера заказа
+        while new_order_id == ORDER_MOCK_ID:
+            new_order_id = super().wait_and_get_text(ConstructorPageLocator.MODAL_NEW_ORDER_ID)
+        super().click_to_element_by_script(ConstructorPageLocator.INGREDIENT_MODAL_CLOSE_BUTTON)
+        return new_order_id
 
     @allure.step('Нажимаем на кнопку "Лента заказов" с помощью скрипта')
     def click_order_feed_button_script(self):
